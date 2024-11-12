@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# -*- coding: UTF-8 -*-
+
 import sys
 import subprocess
 import time
@@ -7,6 +10,9 @@ from datetime import datetime
 
 
 def ping(ip):
+    """
+    Ping the given IP address & return True if it is reachable.
+    """
     try:
         if platform.system().lower() == "windows":
             command = ["ping", ip, "-n", "1", "-w", "4000"]
@@ -20,6 +26,11 @@ def ping(ip):
 
 
 def gather_ping_data(ips, duration, save_interval, csv_filename):
+    """
+    Ping a list of IP's over a duration.
+    Save results at intervals.
+    Log data to a CSV file.
+    """
     start_time = time.time()
     ping_results = {ip: {"success": 0, "timeout": 0} for ip in ips}
 
@@ -53,6 +64,9 @@ def gather_ping_data(ips, duration, save_interval, csv_filename):
 
 
 def save_results_to_csv(ping_results, filename):
+    """
+    Append ping results to a CSV file.
+    """
     timestamp = datetime.now().isoformat()
     with open(filename, mode="a", newline="") as file:
         writer = csv.writer(file)
@@ -72,6 +86,9 @@ def save_results_to_csv(ping_results, filename):
 
 
 def analyze_results(ping_results):
+    """
+    Display analysis of ping results.
+    """
     for ip, results in ping_results.items():
         total = results["success"] + results["timeout"]
         timeout_percentage = (results["timeout"] / total) * 100 if total > 0 else 0
