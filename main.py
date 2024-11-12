@@ -101,11 +101,6 @@ def main():
         save_interval = int(sys.argv[-2])
         csv_filename = sys.argv[-1]
 
-    print(ip, type(ip))
-    print(duration, type(duration))
-    print(save_interval, type(save_interval))
-    print(csv_filename)
-
     ping_data = gather_ping_data(ip, duration, save_interval, csv_filename)
     analyze_results(ping_data)
 
