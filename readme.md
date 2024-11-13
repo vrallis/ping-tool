@@ -38,3 +38,9 @@ python3 main.py <ip1> <ip2> ... <duration_seconds> <save_interval_seconds> <time
 ```bash
 python3 main.py 1.1.1.1 8.8.8.8 3600 300 4000 150
 ```
+
+## Contributors
+
+I would like to thank the following contributors for their help with this project:
+
+- [@KafetzisThomas](https://github.com/KafetzisThomas)
