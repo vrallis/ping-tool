@@ -40,7 +40,7 @@ python3 main.py <ip1> <ip2> ... <duration_seconds> <save_interval_seconds> <time
 Run the script using the following command:
 
 ```bash
-python3 main.py <ip1> <ip2> ... <duration_seconds> <save_interval_seconds> <timeout_duration_ms> <high_ping_threshold_ms>
+python3 main.py 1.1.1.1 8.8.8.8 3600 300 4000 150
 ```
 
 ### Windows Command Line
@@ -48,7 +48,7 @@ python3 main.py <ip1> <ip2> ... <duration_seconds> <save_interval_seconds> <time
 Run the script using the following command:
 
 ```cmd
-python main.py <ip1> <ip2> ... <duration_seconds> <save_interval_seconds> <timeout_duration_ms> <high_ping_threshold_ms>
+python main.py 1.1.1.1 8.8.8.8 3600 300 4000 150
 ```
 
 ## Contributors
