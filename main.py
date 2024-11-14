@@ -60,12 +60,6 @@ def gather_ping_data(ips, duration, save_interval, timeout_duration, high_ping_t
             "timeout_percentage"
         ])
 
-    print(f"Starting ping test for {duration} seconds with the following parameters:")
-    print(f"  Target IPs: {', '.join(ips)}")
-    print(f"  Timeout duration: {timeout_duration} ms")
-    print(f"  High ping threshold: {high_ping_threshold} ms")
-    print(f"  Save interval: {save_interval} seconds")
-
     while time.time() - start_time < duration:
         for ip in ips:
             reachable, response_time = ping(ip, timeout_duration)
@@ -78,6 +72,7 @@ def gather_ping_data(ips, duration, save_interval, timeout_duration, high_ping_t
                 recent_pings[ip].append(timeout_duration)
 
             check_for_irregularities(ip, irregularities, recent_pings[ip], high_ping_threshold)
+            display_real_time_results(ping_results)
 
             time.sleep(1)
 
@@ -86,6 +81,21 @@ def gather_ping_data(ips, duration, save_interval, timeout_duration, high_ping_t
             save_irregularities_to_csv(irregularities)
 
     return ping_results
+
+def display_real_time_results(ping_results):
+    """
+    Display analysis of ping results in real-time.
+    """
+    sys.stdout.write("\033[H\033[J")  # Clear screen
+    for ip, results in ping_results.items():
+        total = results["success"] + results["timeout"]
+        timeout_percentage = (results["timeout"] / total) * 100 if total > 0 else 0
+        sys.stdout.write(f"IP: {ip}\n")
+        sys.stdout.write(f"  Total Requests: {total}\n")
+        sys.stdout.write(f"  Successful: {results['success']}\n")
+        sys.stdout.write(f"  Timed Out: {results['timeout']}\n")
+        sys.stdout.write(f"  Timeout Percentage: {timeout_percentage:.2f}%\n\n")
+    sys.stdout.flush()
 
 def check_for_irregularities(ip, irregularities, recent_pings, high_ping_threshold):
     """
@@ -130,26 +140,13 @@ def save_irregularities_to_csv(irregularities):
                 ])
                 writer.writerow([])  # Blank line after each period
 
-def analyze_results(ping_results):
-    """
-    Display analysis of ping results.
-    """
-    for ip, results in ping_results.items():
-        total = results["success"] + results["timeout"]
-        timeout_percentage = (results["timeout"] / total) * 100 if total > 0 else 0
-        print(f"IP: {ip}")
-        print(f"  Total Requests: {total}")
-        print(f"  Successful: {results['success']}")
-        print(f"  Timed Out: {results['timeout']}")
-        print(f"  Timeout Percentage: {timeout_percentage:.2f}%\n")
-
 def main():
     if len(sys.argv) < 5:
         print("[!] Usage: main.py <ip1> <ip2> ... <duration_seconds> <save_interval_seconds> <timeout_duration_ms> <high_ping_threshold_ms>")
         sys.exit()
 
     try:
-        ip = sys.argv[1:-4]
+        ips = sys.argv[1:-4]
         duration = int(sys.argv[-4])  # seconds
         save_interval = int(sys.argv[-3])  # seconds
         timeout_duration = int(sys.argv[-2])  # ms
@@ -158,8 +155,14 @@ def main():
         print("[!] Error: Please ensure all arguments are correctly specified.")
         sys.exit()
 
-    ping_data = gather_ping_data(ip, duration, save_interval, timeout_duration, high_ping_threshold)
-    analyze_results(ping_data)
+    print(f"Starting ping test for {duration} seconds with the following parameters:")
+    print(f"  Target IPs: {', '.join(ips)}")
+    print(f"  Timeout duration: {timeout_duration} ms")
+    print(f"  High ping threshold: {high_ping_threshold} ms")
+    print(f"  Save interval: {save_interval} seconds")
+    input("\n[!] Press Enter to start the ping scan...")
+
+    gather_ping_data(ips, duration, save_interval, timeout_duration, high_ping_threshold)
 
 main()
 
