@@ -9,6 +9,13 @@ import csv
 from datetime import datetime, timedelta
 from collections import deque
 
+# ANSI text colour codes
+RED = "\033[31m"
+GREEN = "\033[32m"
+YELLOW = "\033[33m"
+PURPLE = "\033[35m"
+RESET = "\033[0m"  # Reset to default colour
+
 def ping(ip, timeout_duration):
     """
     Ping the given IP address & return (reachable, response_time).
@@ -90,11 +97,11 @@ def display_real_time_results(ping_results):
     for ip, results in ping_results.items():
         total = results["success"] + results["timeout"]
         timeout_percentage = (results["timeout"] / total) * 100 if total > 0 else 0
-        sys.stdout.write(f"IP: {ip}\n")
-        sys.stdout.write(f"  Total Requests: {total}\n")
-        sys.stdout.write(f"  Successful: {results['success']}\n")
-        sys.stdout.write(f"  Timed Out: {results['timeout']}\n")
-        sys.stdout.write(f"  Timeout Percentage: {timeout_percentage:.2f}%\n\n")
+        sys.stdout.write(f"IP: {RED}{ip}{RESET}\n")
+        sys.stdout.write(f"  Total Requests: {YELLOW}{total}{RESET}\n")
+        sys.stdout.write(f"  Successful: {YELLOW}{results['success']}{RESET}\n")
+        sys.stdout.write(f"  Timed Out: {YELLOW}{results['timeout']}{RESET}\n")
+        sys.stdout.write(f"  Timeout Percentage: {YELLOW}{timeout_percentage:.2f}%{RESET}\n\n")
     sys.stdout.flush()
 
 def check_for_irregularities(ip, irregularities, recent_pings, high_ping_threshold):
@@ -155,14 +162,15 @@ def main():
         print("[!] Error: Please ensure all arguments are correctly specified.")
         sys.exit()
 
-    print(f"Starting ping test for {duration} seconds with the following parameters:")
-    print(f"  Target IPs: {', '.join(ips)}")
-    print(f"  Timeout duration: {timeout_duration} ms")
-    print(f"  High ping threshold: {high_ping_threshold} ms")
-    print(f"  Save interval: {save_interval} seconds")
-    input("\n[!] Press Enter to start the ping scan...")
+    print(f"Starting {PURPLE}ping test{RESET} for {YELLOW}{duration}{RESET} seconds with the following parameters:")
+    print(f"  Target IPs: {RED}{', '.join(ips)}{RESET}")
+    print(f"  Timeout duration: {YELLOW}{timeout_duration} ms{RESET}")
+    print(f"  High ping threshold: {YELLOW}{high_ping_threshold} ms{RESET}")
+    print(f"  Save interval: {YELLOW}{save_interval} seconds{RESET}")
+    input(f"\n[!] Press {GREEN}Enter{RESET} to start the ping scan...")
 
     gather_ping_data(ips, duration, save_interval, timeout_duration, high_ping_threshold)
+    print(f"\n[!] Ping scan completed {GREEN}successfully{RESET}!")
 
 main()
 
