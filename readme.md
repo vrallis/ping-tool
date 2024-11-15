@@ -5,7 +5,7 @@
 
 This Python tool pings specified IP addresses continuously to help detect potential network overbooking issues caused by your ISP. It logs data on ping success rates, timeouts, and detects irregularity periods where network latency or timeouts might indicate network congestion.
 
-I made this tool to diagnose issues with my own internent connecting and log them so I can provide evidence to my ISP. I hope it can help someone else too!
+I made this tool to diagnose issues with my own internet connecting and log them so I can provide evidence to my ISP. I hope it can help someone else too!
 
 ## Features
 
