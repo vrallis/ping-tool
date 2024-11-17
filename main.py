@@ -85,7 +85,8 @@ def gather_ping_data(ips, duration, save_interval, timeout_duration, high_ping_t
 
         if (time.time() - start_time) % save_interval < 1:
             save_results_to_csv(ping_results)
-            save_irregularities_to_csv(irregularities)
+            save_irregularities_to_csv(irregularities, recent_pings)
+
 
     return ping_results
 
@@ -133,9 +134,9 @@ def save_results_to_csv(ping_results):
                 f"{timeout_percentage:.2f}"
             ])
 
-def save_irregularities_to_csv(irregularities):
+def save_irregularities_to_csv(irregularities, recent_pings):
     """
-    Log irregularity periods to a separate CSV file with empty lines between periods.
+    Log irregularity periods to a separate CSV file, including the recorded pings.
     """
     timestamp = datetime.now().isoformat()
     with open("irregularities_log.csv", mode="a", newline="") as file:
@@ -143,9 +144,11 @@ def save_irregularities_to_csv(irregularities):
         for ip, period in irregularities.items():
             if period["start"] and period["end"]:
                 writer.writerow([
-                    timestamp, ip, period["start"], period["end"]
+                    timestamp, ip, period["start"], period["end"],
+                    ", ".join(map(str, recent_pings[ip]))  # Convert pings to string and join
                 ])
                 writer.writerow([])  # Blank line after each period
+
 
 def main():
     if len(sys.argv) < 5:
