@@ -64,7 +64,7 @@ def gather_ping_data(ips, duration, save_interval, timeout_duration, high_ping_t
         writer = csv.writer(file)
         writer.writerow([
             "timestamp", "ip", "total_requests", "successful", "timed_out",
-            "timeout_percentage"
+            "timeout_percentage", "ping"
         ])
 
     while time.time() - start_time < duration:
@@ -84,9 +84,8 @@ def gather_ping_data(ips, duration, save_interval, timeout_duration, high_ping_t
             time.sleep(1)
 
         if (time.time() - start_time) % save_interval < 1:
-            save_results_to_csv(ping_results)
+            save_results_to_csv(ping_results, recent_pings)
             save_irregularities_to_csv(irregularities, recent_pings)
-
 
     return ping_results
 
@@ -119,9 +118,9 @@ def check_for_irregularities(ip, irregularities, recent_pings, high_ping_thresho
         elif irregularities[ip]["end"] and datetime.now() > irregularities[ip]["end"]:
             irregularities[ip]["start"], irregularities[ip]["end"] = None, None
 
-def save_results_to_csv(ping_results):
+def save_results_to_csv(ping_results, recent_pings):
     """
-    Append ping results to a CSV file.
+    Append ping results to a CSV file, including the current ping times.
     """
     timestamp = datetime.now().isoformat()
     with open("ping_log.csv", mode="a", newline="") as file:
@@ -129,9 +128,10 @@ def save_results_to_csv(ping_results):
         for ip, results in ping_results.items():
             total = results["success"] + results["timeout"]
             timeout_percentage = (results["timeout"] / total) * 100 if total > 0 else 0
+            current_ping = recent_pings[ip][-1] if recent_pings[ip] else "N/A"
             writer.writerow([
                 timestamp, ip, total, results["success"], results["timeout"],
-                f"{timeout_percentage:.2f}"
+                f"{timeout_percentage:.2f}", current_ping
             ])
 
 def save_irregularities_to_csv(irregularities, recent_pings):
